@@ -1,26 +1,24 @@
-import { ACCESSORIES, COAT_COLORS, EYE_COLORS } from "../../data/dogData";
-import { DogSVG } from "../DogSVG";
+import { COLORS, EYE_STYLES, MARKINGS } from "../../data/dogData";
 
 interface TraitsStepProps {
   breed: string;
-  coatColor: string;
-  eyeColor: string;
-  accessory: string;
-  onCoatChange: (v: string) => void;
-  onEyeChange: (v: string) => void;
-  onAccessoryChange: (v: string) => void;
+  color: string;
+  eyes: string;
+  markings: string;
+  onColorChange: (v: string) => void;
+  onEyesChange: (v: string) => void;
+  onMarkingsChange: (v: string) => void;
   onNext: () => void;
   onBack: () => void;
 }
 
 export function TraitsStep({
-  breed,
-  coatColor,
-  eyeColor,
-  accessory,
-  onCoatChange,
-  onEyeChange,
-  onAccessoryChange,
+  color,
+  eyes,
+  markings,
+  onColorChange,
+  onEyesChange,
+  onMarkingsChange,
   onNext,
   onBack,
 }: TraitsStepProps) {
@@ -33,25 +31,22 @@ export function TraitsStep({
         </p>
       </div>
 
-      {/* Coat Color */}
+      {/* Color */}
       <div className="flex flex-col gap-2.5">
-        <span className="text-sm font-bold text-foreground">Coat Color</span>
-        <div
-          className="flex flex-wrap gap-2"
-          data-ocid="traits.coat_color.list"
-        >
-          {COAT_COLORS.map((c, i) => (
+        <span className="text-sm font-bold text-foreground">Color</span>
+        <div className="flex flex-wrap gap-3" data-ocid="traits.color.list">
+          {COLORS.map((c, i) => (
             <button
               key={c.key}
               type="button"
-              onClick={() => onCoatChange(c.key)}
-              data-ocid={`traits.coat_color.item.${i + 1}`}
+              onClick={() => onColorChange(c.key)}
+              data-ocid={`traits.color.item.${i + 1}`}
               title={c.name}
               className="flex flex-col items-center gap-1"
             >
               <span
                 className={`w-9 h-9 rounded-full border-2 transition-all duration-200 block ${
-                  coatColor === c.key
+                  color === c.key
                     ? "border-primary scale-110 shadow-card ring-2 ring-primary/30"
                     : "border-border hover:border-primary/50 hover:scale-105"
                 }`}
@@ -65,74 +60,51 @@ export function TraitsStep({
         </div>
       </div>
 
-      {/* Eye Color */}
+      {/* Eye Style */}
       <div className="flex flex-col gap-2.5">
-        <span className="text-sm font-bold text-foreground">Eye Color</span>
-        <div className="flex flex-wrap gap-2" data-ocid="traits.eye_color.list">
-          {EYE_COLORS.map((c, i) => (
+        <span className="text-sm font-bold text-foreground">Eye Style</span>
+        <div className="flex flex-wrap gap-2" data-ocid="traits.eyes.list">
+          {EYE_STYLES.map((e, i) => (
             <button
-              key={c.key}
+              key={e.key}
               type="button"
-              onClick={() => onEyeChange(c.key)}
-              data-ocid={`traits.eye_color.item.${i + 1}`}
-              title={c.name}
-              className="flex flex-col items-center gap-1"
-            >
-              <span
-                className={`w-9 h-9 rounded-full border-2 transition-all duration-200 block ${
-                  eyeColor === c.key
-                    ? "border-primary scale-110 shadow-card ring-2 ring-primary/30"
-                    : "border-border hover:border-primary/50 hover:scale-105"
-                }`}
-                style={{ backgroundColor: c.hex }}
-              />
-              <span className="text-[10px] font-semibold text-muted-foreground">
-                {c.name}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Accessory */}
-      <div className="flex flex-col gap-2.5">
-        <span className="text-sm font-bold text-foreground">Accessory</span>
-        <div className="flex flex-wrap gap-2" data-ocid="traits.accessory.list">
-          {ACCESSORIES.map((acc, i) => (
-            <button
-              key={acc.key}
-              type="button"
-              onClick={() => onAccessoryChange(acc.key)}
-              data-ocid={`traits.accessory.item.${i + 1}`}
+              onClick={() => onEyesChange(e.key)}
+              data-ocid={`traits.eyes.item.${i + 1}`}
               className={`px-4 py-2 rounded-full text-sm font-bold border-2 transition-all duration-200 ${
-                accessory === acc.key
+                eyes === e.key
                   ? "bg-primary border-primary text-primary-foreground shadow-card"
                   : "bg-card border-border text-foreground hover:border-primary/50"
               }`}
             >
-              {acc.name}
+              {e.name}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Mini live preview */}
-      <div className="flex items-center justify-center py-2">
-        <div className="bg-muted rounded-2xl p-3 flex items-center gap-3">
-          <DogSVG
-            breed={breed}
-            coatColor={coatColor}
-            eyeColor={eyeColor}
-            accessory={accessory}
-            size={80}
-          />
-          <p className="text-xs text-muted-foreground font-medium">
-            Live preview
-          </p>
+      {/* Markings */}
+      <div className="flex flex-col gap-2.5">
+        <span className="text-sm font-bold text-foreground">Markings</span>
+        <div className="flex flex-wrap gap-2" data-ocid="traits.markings.list">
+          {MARKINGS.map((m, i) => (
+            <button
+              key={m.key}
+              type="button"
+              onClick={() => onMarkingsChange(m.key)}
+              data-ocid={`traits.markings.item.${i + 1}`}
+              className={`px-4 py-2 rounded-full text-sm font-bold border-2 transition-all duration-200 ${
+                markings === m.key
+                  ? "bg-primary border-primary text-primary-foreground shadow-card"
+                  : "bg-card border-border text-foreground hover:border-primary/50"
+              }`}
+            >
+              {m.name}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 mt-2">
         <button
           type="button"
           onClick={onBack}
@@ -147,7 +119,7 @@ export function TraitsStep({
           data-ocid="traits.primary_button"
           className="flex-1 py-3 rounded-full font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all duration-200 shadow-card"
         >
-          Preview →
+          Next →
         </button>
       </div>
     </div>

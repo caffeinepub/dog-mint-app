@@ -1,17 +1,17 @@
 const STEPS = [
   { key: "breed", label: "Breed" },
-  { key: "name", label: "Name" },
   { key: "traits", label: "Traits" },
-  { key: "preview", label: "Preview" },
+  { key: "name", label: "Name" },
+  { key: "mint", label: "Mint" },
 ];
 
-type WizardStep = "breed" | "name" | "traits" | "preview" | "success";
+type WizardStep = "breed" | "traits" | "name" | "mint" | "success";
 
 const STEP_INDEX: Record<WizardStep, number> = {
   breed: 0,
-  name: 1,
-  traits: 2,
-  preview: 3,
+  traits: 1,
+  name: 2,
+  mint: 3,
   success: 4,
 };
 

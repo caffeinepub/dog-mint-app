@@ -4,44 +4,44 @@ import { DogSVG } from "../components/DogSVG";
 const FEATURED_DOGS = [
   {
     breed: "labrador",
-    coatColor: "golden",
-    eyeColor: "brown",
-    accessory: "collar",
+    color: "golden",
+    eyes: "round",
+    markings: "none",
     name: "Biscuit",
   },
   {
     breed: "husky",
-    coatColor: "gray",
-    eyeColor: "heterochromia",
-    accessory: "glasses",
+    color: "gray",
+    eyes: "wide",
+    markings: "none",
     name: "Nova",
   },
   {
     breed: "corgi",
-    coatColor: "golden",
-    eyeColor: "amber",
-    accessory: "bowtie",
+    color: "golden",
+    eyes: "round",
+    markings: "patches",
     name: "Pudding",
   },
   {
     breed: "dalmatian",
-    coatColor: "spotted",
-    eyeColor: "blue",
-    accessory: "hat",
+    color: "white",
+    eyes: "round",
+    markings: "spots",
     name: "Dot",
   },
   {
     breed: "poodle",
-    coatColor: "cream",
-    eyeColor: "green",
-    accessory: "bandana",
+    color: "white",
+    eyes: "sleepy",
+    markings: "none",
     name: "Coco",
   },
   {
     breed: "shiba",
-    coatColor: "golden",
-    eyeColor: "brown",
-    accessory: "none",
+    color: "golden",
+    eyes: "round",
+    markings: "none",
     name: "Mochi",
   },
 ];
@@ -56,17 +56,16 @@ export function HomePage() {
           <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
             <span className="text-xl">🐾</span>
             <span className="text-sm font-bold tracking-wide">
-              ICP-Native Dog NFTs
+              Galactic Dogs
             </span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
-            Create Your
-            <br />
-            <span className="text-accent">Unique Dog</span>
+            Create Your Dog
           </h1>
           <p className="text-lg text-hero-foreground/80 max-w-xl">
-            Design, customize, and mint your one-of-a-kind dog on the Internet
-            Computer. Every pup is uniquely yours.
+            Choose a breed. Name it. Own it.
+            <br />
+            Mint your custom dog instantly.
           </p>
           <button
             type="button"
@@ -83,10 +82,10 @@ export function HomePage() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-extrabold text-foreground">
-              Meet the Pack
+              Pick Your Breed
             </h2>
             <p className="text-muted-foreground mt-2 text-sm">
-              8 unique breeds waiting to be customized
+              Each dog is fully customizable — yours to name and keep
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
@@ -99,9 +98,9 @@ export function HomePage() {
               >
                 <DogSVG
                   breed={dog.breed}
-                  coatColor={dog.coatColor}
-                  eyeColor={dog.eyeColor}
-                  accessory={dog.accessory}
+                  color={dog.color}
+                  eyes={dog.eyes}
+                  markings={dog.markings}
                   size={72}
                 />
                 <span className="text-xs font-bold text-foreground">
@@ -130,12 +129,12 @@ export function HomePage() {
                 step: "2",
                 icon: "🎨",
                 title: "Customize Traits",
-                desc: "Set your coat color, eye color, and fun accessories like hats or bandanas.",
+                desc: "Set your color, eye style, and markings for a truly unique look.",
               },
               {
                 step: "3",
                 icon: "✨",
-                title: "Mint on ICP",
+                title: "Mint Instantly",
                 desc: "Your dog is stored permanently on the Internet Computer, tied to your identity.",
               },
             ].map((item) => (
@@ -159,7 +158,7 @@ export function HomePage() {
             data-ocid="home.secondary_button"
             className="mt-8 px-8 py-3 rounded-full bg-primary text-primary-foreground font-bold shadow-card hover:bg-primary/90 transition-all duration-200"
           >
-            Create Your Dog
+            Start Creating
           </button>
         </div>
       </section>

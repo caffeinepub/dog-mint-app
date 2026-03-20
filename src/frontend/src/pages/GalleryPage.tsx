@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import type { Dog } from "../backend.d";
 import { DogCard } from "../components/DogCard";
 import { useActor } from "../hooks/useActor";
 
@@ -12,23 +13,29 @@ export function GalleryPage() {
     isLoading,
     isError,
     refetch,
-  } = useQuery({
+  } = useQuery<Dog[]>({
     queryKey: ["myDogs"],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getMyDogs();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return (actor as any).getMyDogs() as Promise<Dog[]>;
     },
     enabled: !!actor && !isFetching,
   });
 
+  const dogCount = dogs?.length ?? 0;
+
   return (
     <main className="min-h-screen py-10 px-6 paw-pattern">
       <div className="max-w-5xl mx-auto">
+        {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-extrabold text-foreground">My Dogs</h1>
+            <h1 className="text-3xl font-extrabold text-foreground">My NFTs</h1>
             <p className="text-muted-foreground mt-1">
-              Your minted dog collection on the Internet Computer
+              {dogCount > 0
+                ? `${dogCount} dog${dogCount !== 1 ? "s" : ""} minted on the Internet Computer`
+                : "Your minted dog collection on the Internet Computer"}
             </p>
           </div>
           <button
@@ -41,6 +48,7 @@ export function GalleryPage() {
           </button>
         </div>
 
+        {/* Loading */}
         {(isLoading || isFetching) && (
           <div
             className="flex flex-col items-center justify-center py-20 gap-4"
@@ -53,6 +61,7 @@ export function GalleryPage() {
           </div>
         )}
 
+        {/* Error */}
         {isError && (
           <div
             className="flex flex-col items-center gap-3 py-16"
@@ -71,6 +80,7 @@ export function GalleryPage() {
           </div>
         )}
 
+        {/* Empty state */}
         {!isLoading && !isFetching && !isError && dogs && dogs.length === 0 && (
           <div
             className="flex flex-col items-center gap-6 py-20"
@@ -96,6 +106,7 @@ export function GalleryPage() {
           </div>
         )}
 
+        {/* NFT grid */}
         {dogs && dogs.length > 0 && (
           <div
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5"

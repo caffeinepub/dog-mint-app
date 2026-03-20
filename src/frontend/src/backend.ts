@@ -91,18 +91,20 @@ export class ExternalBlob {
 }
 export interface Dog {
     id: string;
-    accessory: string;
+    
     name: string;
-    coatColor: string;
+    color: string;
     mintedAt: bigint;
-    eyeColor: string;
+    eyes: string;
+    markings: string;
     breed: string;
 }
 export interface MintDogInput {
-    accessory: string;
+    
     name: string;
-    coatColor: string;
-    eyeColor: string;
+    color: string;
+    eyes: string;
+    markings: string;
     breed: string;
 }
 export interface backendInterface {

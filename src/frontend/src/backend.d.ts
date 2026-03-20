@@ -9,19 +9,19 @@ export interface None {
 export type Option<T> = Some<T> | None;
 export interface Dog {
     id: string;
-    accessory: string;
     name: string;
-    coatColor: string;
-    mintedAt: bigint;
-    eyeColor: string;
     breed: string;
+    color: string;
+    eyes: string;
+    markings: string;
+    mintedAt: bigint;
 }
 export interface MintDogInput {
-    accessory: string;
     name: string;
-    coatColor: string;
-    eyeColor: string;
     breed: string;
+    color: string;
+    eyes: string;
+    markings: string;
 }
 export interface backendInterface {
     getDogById(id: string): Promise<Dog | null>;

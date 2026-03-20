@@ -1,5 +1,5 @@
 import type { Dog } from "../backend.d";
-import { BREEDS } from "../data/dogData";
+import { BREEDS, COLORS, EYE_STYLES, MARKINGS } from "../data/dogData";
 import { DogSVG } from "./DogSVG";
 
 interface DogCardProps {
@@ -7,8 +7,18 @@ interface DogCardProps {
   index: number;
 }
 
+function shortId(id: string) {
+  if (id.length <= 14) return id;
+  return `${id.slice(0, 6)}…${id.slice(-5)}`;
+}
+
 export function DogCard({ dog, index }: DogCardProps) {
   const breedLabel = BREEDS.find((b) => b.key === dog.breed)?.name ?? dog.breed;
+  const colorLabel = COLORS.find((c) => c.key === dog.color)?.name ?? dog.color;
+  const eyeLabel = EYE_STYLES.find((e) => e.key === dog.eyes)?.name ?? dog.eyes;
+  const markingsLabel =
+    MARKINGS.find((m) => m.key === dog.markings)?.name ?? dog.markings;
+
   const mintDate = new Date(Number(dog.mintedAt) / 1_000_000);
   const dateStr = mintDate.toLocaleDateString("en-US", {
     year: "numeric",
@@ -21,50 +31,56 @@ export function DogCard({ dog, index }: DogCardProps) {
       className="bg-card border border-border rounded-2xl overflow-hidden shadow-card hover:shadow-hero transition-all duration-300 hover:-translate-y-1 flex flex-col"
       data-ocid={`gallery.item.${index}`}
     >
+      {/* Dog illustration */}
       <div className="bg-muted flex items-center justify-center py-6 px-4">
         <DogSVG
           breed={dog.breed}
-          coatColor={dog.coatColor}
-          eyeColor={dog.eyeColor}
-          accessory={dog.accessory}
+          color={dog.color}
+          eyes={dog.eyes}
+          markings={dog.markings}
           size={110}
         />
       </div>
 
-      <div className="p-4 flex flex-col gap-1.5">
-        <h3 className="font-bold text-lg text-foreground leading-tight truncate">
-          {dog.name}
-        </h3>
-        <span className="text-sm font-semibold text-primary">{breedLabel}</span>
-        <div className="flex items-center gap-1.5 mt-1">
-          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              role="img"
-              aria-label="calendar"
-            >
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
+      {/* Info */}
+      <div className="p-4 flex flex-col gap-2">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <h3 className="font-bold text-lg text-foreground leading-tight truncate">
+              {dog.name}
+            </h3>
+            <span className="text-sm font-semibold text-primary">
+              {breedLabel}
+            </span>
+          </div>
+          <span className="text-xs text-muted-foreground whitespace-nowrap pt-0.5">
             {dateStr}
           </span>
         </div>
+
+        {/* Trait badges */}
         <div className="flex flex-wrap gap-1 mt-1">
-          {dog.accessory !== "none" && (
-            <span className="text-xs bg-accent/20 text-accent-foreground px-2 py-0.5 rounded-full font-medium capitalize">
-              {dog.accessory}
+          <span className="text-xs bg-accent/20 text-accent-foreground px-2 py-0.5 rounded-full font-medium capitalize">
+            {colorLabel}
+          </span>
+          <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium capitalize">
+            {eyeLabel} eyes
+          </span>
+          {dog.markings && dog.markings !== "none" && (
+            <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-medium capitalize">
+              {markingsLabel}
             </span>
           )}
-          <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-medium capitalize">
-            {dog.coatColor}
-          </span>
+        </div>
+
+        {/* Token ID */}
+        <div className="mt-1 pt-2 border-t border-border">
+          <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">
+            Token ID
+          </p>
+          <p className="text-xs font-mono text-foreground/60 mt-0.5 truncate">
+            {shortId(dog.id)}
+          </p>
         </div>
       </div>
     </div>

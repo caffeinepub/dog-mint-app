@@ -35,9 +35,9 @@ export function BreedStep({ selected, onSelect, onNext }: BreedStepProps) {
           >
             <DogSVG
               breed={breed.key}
-              coatColor={breed.defaultCoat}
-              eyeColor="brown"
-              accessory="none"
+              color={breed.defaultColor}
+              eyes="round"
+              markings="none"
               size={70}
             />
             <span

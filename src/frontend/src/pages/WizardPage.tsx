@@ -4,65 +4,126 @@ import type { Dog } from "../backend.d";
 import { DogSVG } from "../components/DogSVG";
 import { StepIndicator } from "../components/StepIndicator";
 import { BreedStep } from "../components/wizard/BreedStep";
+import { MintStep } from "../components/wizard/MintStep";
 import { NameStep } from "../components/wizard/NameStep";
-import { PreviewStep } from "../components/wizard/PreviewStep";
 import { TraitsStep } from "../components/wizard/TraitsStep";
-import { BREEDS } from "../data/dogData";
+import { BREEDS, COLORS, EYE_STYLES, MARKINGS } from "../data/dogData";
 
-type WizardStep = "breed" | "name" | "traits" | "preview" | "success";
+type WizardStep = "breed" | "traits" | "name" | "mint" | "success";
 
 interface WizardState {
   step: WizardStep;
   breed: string;
   name: string;
-  coatColor: string;
-  eyeColor: string;
-  accessory: string;
+  color: string;
+  eyes: string;
+  markings: string;
   mintedDog?: Dog;
+}
+
+const DEFAULT_STATE: WizardState = {
+  step: "breed",
+  breed: "",
+  name: "",
+  color: "golden",
+  eyes: "round",
+  markings: "none",
+};
+
+// Truncate a long dog ID for display
+function shortId(id: string) {
+  if (id.length <= 16) return id;
+  return `${id.slice(0, 8)}…${id.slice(-6)}`;
 }
 
 export function WizardPage() {
   const navigate = useNavigate();
-  const [state, setState] = useState<WizardState>({
-    step: "breed",
-    breed: "",
-    name: "",
-    coatColor: "golden",
-    eyeColor: "brown",
-    accessory: "none",
-  });
+  const [state, setState] = useState<WizardState>(DEFAULT_STATE);
 
   function update(patch: Partial<WizardState>) {
     setState((prev) => ({ ...prev, ...patch }));
   }
 
   const breedLabel = BREEDS.find((b) => b.key === state.breed)?.name ?? "";
+  const colorLabel =
+    COLORS.find((c) => c.key === state.color)?.name ?? state.color;
+  const eyeLabel =
+    EYE_STYLES.find((e) => e.key === state.eyes)?.name ?? state.eyes;
+  const markingsLabel =
+    MARKINGS.find((m) => m.key === state.markings)?.name ?? state.markings;
 
+  // ── SUCCESS SCREEN ────────────────────────────────────────────────────────
   if (state.step === "success" && state.mintedDog) {
+    const dog = state.mintedDog;
+    const mintedBreedLabel =
+      BREEDS.find((b) => b.key === dog.breed)?.name ?? dog.breed;
+    const mintedColorLabel =
+      COLORS.find((c) => c.key === dog.color)?.name ?? dog.color;
+    const mintedEyeLabel =
+      EYE_STYLES.find((e) => e.key === dog.eyes)?.name ?? dog.eyes;
+    const mintedMarkingsLabel =
+      MARKINGS.find((m) => m.key === dog.markings)?.name ?? dog.markings;
+
     return (
-      <main className="min-h-screen py-12 px-6 flex items-center justify-center paw-pattern">
-        <div className="bg-card border border-border rounded-3xl shadow-hero p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-bounce-in">
+      <main className="min-h-screen py-12 px-4 flex items-center justify-center paw-pattern">
+        <div className="bg-card border border-border rounded-3xl shadow-hero p-8 max-w-md w-full flex flex-col items-center gap-6 animate-bounce-in">
+          {/* Header */}
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-4xl">
             🎉
           </div>
           <div className="text-center">
             <h1 className="text-2xl font-extrabold text-foreground">
-              Congratulations!
+              {dog.name} is live!
             </h1>
             <p className="text-muted-foreground mt-2 text-sm">
-              <strong className="text-foreground">
-                {state.mintedDog.name}
-              </strong>{" "}
-              has been minted on the Internet Computer!
+              Successfully minted on the Internet Computer.
             </p>
           </div>
-          <DogSVG
-            breed={state.mintedDog.breed}
-            coatColor={state.mintedDog.coatColor}
-            eyeColor={state.mintedDog.eyeColor}
-            accessory={state.mintedDog.accessory}
-            size={160}
-          />
+
+          {/* Dog preview */}
+          <div className="bg-muted rounded-2xl p-6 w-full flex items-center justify-center">
+            <DogSVG
+              breed={dog.breed}
+              color={dog.color}
+              eyes={dog.eyes}
+              markings={dog.markings}
+              size={160}
+            />
+          </div>
+
+          {/* Trait summary */}
+          <div className="w-full grid grid-cols-2 gap-2">
+            {[
+              { label: "Breed", value: mintedBreedLabel },
+              { label: "Name", value: dog.name },
+              { label: "Color", value: mintedColorLabel },
+              { label: "Eyes", value: mintedEyeLabel },
+              { label: "Markings", value: mintedMarkingsLabel },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="bg-muted/60 border border-border rounded-xl px-3 py-2"
+              >
+                <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">
+                  {item.label}
+                </p>
+                <p className="text-sm font-bold text-foreground mt-0.5 capitalize">
+                  {item.value}
+                </p>
+              </div>
+            ))}
+            {/* Token ID spanning full width */}
+            <div className="col-span-2 bg-muted/60 border border-border rounded-xl px-3 py-2">
+              <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">
+                Token ID
+              </p>
+              <p className="text-xs font-mono text-foreground mt-0.5 break-all">
+                {shortId(dog.id)}
+              </p>
+            </div>
+          </div>
+
+          {/* Actions */}
           <div className="flex gap-3 w-full">
             <button
               type="button"
@@ -70,20 +131,11 @@ export function WizardPage() {
               data-ocid="success.primary_button"
               className="flex-1 py-3 rounded-full bg-primary text-primary-foreground font-bold shadow-card hover:bg-primary/90 transition-all"
             >
-              View My Dogs 🐾
+              View My NFTs 🐾
             </button>
             <button
               type="button"
-              onClick={() =>
-                setState({
-                  step: "breed",
-                  breed: "",
-                  name: "",
-                  coatColor: "golden",
-                  eyeColor: "brown",
-                  accessory: "none",
-                })
-              }
+              onClick={() => setState(DEFAULT_STATE)}
               data-ocid="success.secondary_button"
               className="flex-1 py-3 rounded-full bg-muted text-foreground font-bold hover:bg-muted/80 transition-all"
             >
@@ -95,6 +147,7 @@ export function WizardPage() {
     );
   }
 
+  // ── WIZARD FLOW ───────────────────────────────────────────────────────────
   return (
     <main className="min-h-screen py-8 px-4 paw-pattern">
       <div className="max-w-5xl mx-auto">
@@ -108,61 +161,61 @@ export function WizardPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          {/* Wizard card */}
           <div className="bg-card border border-border rounded-3xl shadow-card p-6">
-            {state.step !== "success" && (
-              <div className="mb-6">
-                <StepIndicator currentStep={state.step} />
-              </div>
-            )}
+            <div className="mb-6">
+              <StepIndicator currentStep={state.step} />
+            </div>
 
             {state.step === "breed" && (
               <BreedStep
                 selected={state.breed}
                 onSelect={(breed) => {
-                  const defaultCoat =
-                    BREEDS.find((b) => b.key === breed)?.defaultCoat ??
+                  const defaultColor =
+                    BREEDS.find((b) => b.key === breed)?.defaultColor ??
                     "golden";
-                  update({ breed, coatColor: defaultCoat });
+                  update({ breed, color: defaultColor });
                 }}
+                onNext={() => update({ step: "traits" })}
+              />
+            )}
+            {state.step === "traits" && (
+              <TraitsStep
+                breed={state.breed}
+                color={state.color}
+                eyes={state.eyes}
+                markings={state.markings}
+                onColorChange={(color) => update({ color })}
+                onEyesChange={(eyes) => update({ eyes })}
+                onMarkingsChange={(markings) => update({ markings })}
                 onNext={() => update({ step: "name" })}
+                onBack={() => update({ step: "breed" })}
               />
             )}
             {state.step === "name" && (
               <NameStep
                 name={state.name}
                 onChange={(name) => update({ name })}
-                onNext={() => update({ step: "traits" })}
-                onBack={() => update({ step: "breed" })}
+                onNext={() => update({ step: "mint" })}
+                onBack={() => update({ step: "traits" })}
               />
             )}
-            {state.step === "traits" && (
-              <TraitsStep
-                breed={state.breed}
-                coatColor={state.coatColor}
-                eyeColor={state.eyeColor}
-                accessory={state.accessory}
-                onCoatChange={(coatColor) => update({ coatColor })}
-                onEyeChange={(eyeColor) => update({ eyeColor })}
-                onAccessoryChange={(accessory) => update({ accessory })}
-                onNext={() => update({ step: "preview" })}
-                onBack={() => update({ step: "name" })}
-              />
-            )}
-            {state.step === "preview" && (
-              <PreviewStep
+            {state.step === "mint" && (
+              <MintStep
                 breed={state.breed}
                 name={state.name}
-                coatColor={state.coatColor}
-                eyeColor={state.eyeColor}
-                accessory={state.accessory}
+                color={state.color}
+                eyes={state.eyes}
+                markings={state.markings}
                 onMintSuccess={(dog) =>
                   update({ step: "success", mintedDog: dog })
                 }
-                onBack={() => update({ step: "traits" })}
+                onBack={() => update({ step: "name" })}
               />
             )}
           </div>
 
+          {/* Live preview panel */}
           <div className="bg-card border border-border rounded-3xl shadow-card p-6 flex flex-col items-center gap-4 sticky top-24">
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
               Live Preview
@@ -170,9 +223,9 @@ export function WizardPage() {
             <div className="bg-muted rounded-2xl p-6 w-full flex items-center justify-center">
               <DogSVG
                 breed={state.breed || "labrador"}
-                coatColor={state.coatColor}
-                eyeColor={state.eyeColor}
-                accessory={state.accessory}
+                color={state.color}
+                eyes={state.eyes}
+                markings={state.markings}
                 size={200}
               />
             </div>
@@ -188,24 +241,28 @@ export function WizardPage() {
             )}
             <div className="flex flex-wrap gap-2 justify-center">
               {[
-                state.coatColor && {
-                  label: state.coatColor,
+                {
+                  label: colorLabel,
                   color: "bg-accent/20 text-accent-foreground",
                 },
-                state.eyeColor && {
-                  label: `${state.eyeColor} eyes`,
+                {
+                  label: `${eyeLabel} eyes`,
                   color: "bg-primary/10 text-primary",
                 },
-                state.accessory !== "none" && {
-                  label: state.accessory,
-                  color: "bg-secondary/30 text-secondary-foreground",
-                },
+                state.markings !== "none"
+                  ? {
+                      label: markingsLabel,
+                      color: "bg-secondary/30 text-secondary-foreground",
+                    }
+                  : null,
               ]
                 .filter(Boolean)
                 .map((badge) => (
                   <span
                     key={(badge as { label: string }).label}
-                    className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${(badge as { color: string }).color}`}
+                    className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${
+                      (badge as { color: string }).color
+                    }`}
                   >
                     {(badge as { label: string }).label}
                   </span>
