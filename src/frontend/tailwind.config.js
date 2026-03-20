@@ -17,6 +17,11 @@ export default {
     extend: {
       fontFamily: {
         nunito: ["Nunito", "sans-serif"],
+        display: ["Bricolage Grotesque", "sans-serif"],
+        body: ["Plus Jakarta Sans", "Nunito", "sans-serif"],
+      },
+      spacing: {
+        18: "4.5rem",
       },
       colors: {
         border: "oklch(var(--border))",
@@ -56,6 +61,10 @@ export default {
           DEFAULT: "oklch(var(--hero))",
           foreground: "oklch(var(--hero-foreground))",
         },
+        footer: {
+          DEFAULT: "oklch(var(--footer))",
+          foreground: "oklch(var(--footer-foreground))",
+        },
         chart: {
           1: "oklch(var(--chart-1))",
           2: "oklch(var(--chart-2))",
@@ -80,11 +89,12 @@ export default {
         sm: "calc(var(--radius) - 4px)",
         xl: "calc(var(--radius) + 4px)",
         "2xl": "calc(var(--radius) + 8px)",
+        "3xl": "calc(var(--radius) + 14px)",
       },
       boxShadow: {
         xs: "0 1px 2px 0 rgba(46,34,27,0.06)",
-        card: "0 2px 12px 0 rgba(46,34,27,0.08)",
-        hero: "0 4px 24px 0 rgba(46,34,27,0.14)",
+        card: "0 2px 14px 0 rgba(46,34,27,0.09)",
+        hero: "0 6px 28px 0 rgba(46,34,27,0.16)",
       },
       keyframes: {
         "accordion-down": {
@@ -96,7 +106,7 @@ export default {
           to: { height: "0" },
         },
         "slide-in": {
-          from: { opacity: "0", transform: "translateY(16px)" },
+          from: { opacity: "0", transform: "translateY(10px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
         "fade-in": {
@@ -112,7 +122,7 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "slide-in": "slide-in 0.35s ease-out",
+        "slide-in": "slide-in 0.3s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         "bounce-in": "bounce-in 0.5s ease-out",
       },

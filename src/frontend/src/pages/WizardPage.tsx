@@ -1,4 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
+import { motion } from "motion/react";
 import { useState } from "react";
 import type { Dog } from "../backend.d";
 import { DogSVG } from "../components/DogSVG";
@@ -30,10 +31,9 @@ const DEFAULT_STATE: WizardState = {
   markings: "none",
 };
 
-// Truncate a long dog ID for display
 function shortId(id: string) {
   if (id.length <= 16) return id;
-  return `${id.slice(0, 8)}…${id.slice(-6)}`;
+  return `${id.slice(0, 8)}\u2026${id.slice(-6)}`;
 }
 
 export function WizardPage() {
@@ -66,13 +66,18 @@ export function WizardPage() {
 
     return (
       <main className="min-h-screen py-12 px-4 flex items-center justify-center paw-pattern">
-        <div className="bg-card border border-border rounded-3xl shadow-hero p-8 max-w-md w-full flex flex-col items-center gap-6 animate-bounce-in">
-          {/* Header */}
-          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-4xl">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.88 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="bg-card border border-border rounded-3xl shadow-hero p-8 max-w-md w-full flex flex-col items-center gap-6"
+        >
+          {/* Celebration badge */}
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-4xl animate-bounce-in">
             🎉
           </div>
           <div className="text-center">
-            <h1 className="text-2xl font-extrabold text-foreground">
+            <h1 className="text-2xl font-display font-extrabold text-foreground tracking-tight">
               {dog.name} is live!
             </h1>
             <p className="text-muted-foreground mt-2 text-sm">
@@ -81,7 +86,7 @@ export function WizardPage() {
           </div>
 
           {/* Dog preview */}
-          <div className="bg-muted rounded-2xl p-6 w-full flex items-center justify-center">
+          <div className="bg-gradient-to-b from-primary/8 to-muted rounded-2xl p-6 w-full flex items-center justify-center border border-border">
             <DogSVG
               breed={dog.breed}
               color={dog.color}
@@ -104,7 +109,7 @@ export function WizardPage() {
                 key={item.label}
                 className="bg-muted/60 border border-border rounded-xl px-3 py-2"
               >
-                <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">
+                <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
                   {item.label}
                 </p>
                 <p className="text-sm font-bold text-foreground mt-0.5 capitalize">
@@ -112,12 +117,11 @@ export function WizardPage() {
                 </p>
               </div>
             ))}
-            {/* Token ID spanning full width */}
             <div className="col-span-2 bg-muted/60 border border-border rounded-xl px-3 py-2">
-              <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">
+              <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
                 Token ID
               </p>
-              <p className="text-xs font-mono text-foreground mt-0.5 break-all">
+              <p className="text-xs font-mono text-foreground/60 mt-0.5 break-all">
                 {shortId(dog.id)}
               </p>
             </div>
@@ -129,7 +133,7 @@ export function WizardPage() {
               type="button"
               onClick={() => navigate({ to: "/gallery" })}
               data-ocid="success.primary_button"
-              className="flex-1 py-3 rounded-full bg-primary text-primary-foreground font-bold shadow-card hover:bg-primary/90 transition-all"
+              className="flex-1 py-3.5 rounded-full bg-primary text-primary-foreground font-bold shadow-card hover:bg-primary/90 transition-all hover:-translate-y-0.5"
             >
               View My NFTs 🐾
             </button>
@@ -137,33 +141,43 @@ export function WizardPage() {
               type="button"
               onClick={() => setState(DEFAULT_STATE)}
               data-ocid="success.secondary_button"
-              className="flex-1 py-3 rounded-full bg-muted text-foreground font-bold hover:bg-muted/80 transition-all"
+              className="flex-1 py-3.5 rounded-full bg-muted text-foreground font-bold hover:bg-muted/80 transition-all"
             >
               Mint Another
             </button>
           </div>
-        </div>
+        </motion.div>
       </main>
     );
   }
 
   // ── WIZARD FLOW ───────────────────────────────────────────────────────────
   return (
-    <main className="min-h-screen py-8 px-4 paw-pattern">
+    <main className="min-h-screen py-10 px-4 paw-pattern">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-foreground">
+        {/* Page header */}
+        <div className="text-center mb-10">
+          <p className="text-xs font-bold tracking-[0.2em] uppercase text-primary mb-2">
+            Creation Studio
+          </p>
+          <h1 className="text-3xl sm:text-4xl font-display font-extrabold text-foreground tracking-tight">
             Create Your Dog
           </h1>
-          <p className="text-muted-foreground mt-2">
-            Customize every detail, then mint it on ICP
+          <p className="text-muted-foreground mt-2 text-base">
+            Customize every detail, then mint it on ICP — permanently yours.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
           {/* Wizard card */}
-          <div className="bg-card border border-border rounded-3xl shadow-card p-6">
-            <div className="mb-6">
+          <motion.div
+            key={state.step}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-card border border-border rounded-3xl shadow-card p-7"
+          >
+            <div className="mb-7">
               <StepIndicator currentStep={state.step} />
             </div>
 
@@ -213,14 +227,20 @@ export function WizardPage() {
                 onBack={() => update({ step: "name" })}
               />
             )}
-          </div>
+          </motion.div>
 
           {/* Live preview panel */}
-          <div className="bg-card border border-border rounded-3xl shadow-card p-6 flex flex-col items-center gap-4 sticky top-24">
-            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-              Live Preview
-            </h3>
-            <div className="bg-muted rounded-2xl p-6 w-full flex items-center justify-center">
+          <div className="bg-card border border-border rounded-3xl shadow-card p-7 flex flex-col items-center gap-5 sticky top-24">
+            {/* Preview label */}
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-[0.18em]">
+                Live Preview
+              </h3>
+            </div>
+
+            {/* Dog canvas */}
+            <div className="bg-gradient-to-b from-primary/6 to-muted rounded-2xl p-8 w-full flex items-center justify-center border border-border">
               <DogSVG
                 breed={state.breed || "labrador"}
                 color={state.color}
@@ -229,47 +249,42 @@ export function WizardPage() {
                 size={200}
               />
             </div>
-            {state.name && (
-              <h4 className="text-xl font-extrabold text-foreground">
+
+            {/* Dog name */}
+            {state.name ? (
+              <h4 className="text-2xl font-display font-extrabold text-foreground tracking-tight">
                 {state.name}
               </h4>
+            ) : (
+              <h4 className="text-lg font-display font-bold text-muted-foreground/40 tracking-tight">
+                Unnamed Dog
+              </h4>
             )}
+
+            {/* Breed badge */}
             {breedLabel && (
-              <span className="text-sm font-semibold text-primary">
+              <span className="px-4 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">
                 {breedLabel}
               </span>
             )}
+
+            {/* Trait pills */}
             <div className="flex flex-wrap gap-2 justify-center">
-              {[
-                {
-                  label: colorLabel,
-                  color: "bg-accent/20 text-accent-foreground",
-                },
-                {
-                  label: `${eyeLabel} eyes`,
-                  color: "bg-primary/10 text-primary",
-                },
-                state.markings !== "none"
-                  ? {
-                      label: markingsLabel,
-                      color: "bg-secondary/30 text-secondary-foreground",
-                    }
-                  : null,
-              ]
-                .filter(Boolean)
-                .map((badge) => (
-                  <span
-                    key={(badge as { label: string }).label}
-                    className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${
-                      (badge as { color: string }).color
-                    }`}
-                  >
-                    {(badge as { label: string }).label}
-                  </span>
-                ))}
+              <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-accent/20 text-accent-foreground capitalize">
+                {colorLabel}
+              </span>
+              <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-primary/10 text-primary capitalize">
+                {eyeLabel} eyes
+              </span>
+              {state.markings !== "none" && (
+                <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-secondary/30 text-secondary-foreground capitalize">
+                  {markingsLabel}
+                </span>
+              )}
             </div>
+
             <p className="text-xs text-muted-foreground text-center">
-              Your dog updates live as you customize 🐾
+              Updates instantly as you customize 🐾
             </p>
           </div>
         </div>
