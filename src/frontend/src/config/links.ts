@@ -1,7 +1,14 @@
-export const SOCIAL_LINKS = [
-  { label: "Twitter", href: "https://twitter.com/", icon: "𝕏" },
-  { label: "Discord", href: "https://discord.gg/", icon: "💬" },
-  { label: "Instagram", href: "https://instagram.com/", icon: "📸" },
+export type SocialLink = {
+  label: string;
+  href: string;
+  platform: "twitter" | "facebook" | "instagram" | "discord";
+};
+
+export const SOCIAL_LINKS: SocialLink[] = [
+  { label: "Twitter / X", href: "https://twitter.com/", platform: "twitter" },
+  { label: "Facebook", href: "https://facebook.com/", platform: "facebook" },
+  { label: "Instagram", href: "https://instagram.com/", platform: "instagram" },
+  { label: "Discord", href: "https://discord.gg/", platform: "discord" },
 ];
 
 export const LEGAL_LINKS = [
